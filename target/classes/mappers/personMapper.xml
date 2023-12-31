@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--映射点 映射接口文件-->
+<mapper namespace="com.luo.xm.dao.PersonDaoInter">
+    <select id="selectPersonByCode" parameterType="string" resultType="com.luo.xm.model.Person">
+        SELECT *
+        FROM person
+        WHERE code = #{code}
+    </select>
+
+    <insert id="insertPersonOne" parameterType="person">
+        INSERT INTO person(name, code, unit, state, grade, estate, heating, reason)
+        VALUES (#{name}, #{code}, #{unit}, #{state}, #{grade}, #{estate}, #{heating}, #{reason})
+    </insert>
+
+    <insert id="insertSomeByExcel" parameterType="list">
+        INSERT INTO person(name, code, unit, state, grade, estate, heating, reason)
+        VALUES
+        <foreach collection="list" item="person" separator=",">
+            (#{person.name}, #{person.code}, #{person.unit}, #{person.state}, #{person.grade}, #{person.estate}, #{person.heating}, #{person.reason})
+        </foreach>
+    </insert>
+
+    <select id="selectPersonAll" parameterType="map" resultType="com.luo.xm.model.Person">
+        SELECT *
+        FROM person
+        <where>
+            <if test="name != null and name != '' and name != 'null' and name != 'undefined'">
+                AND `name` LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="code != null and code != '' and code != 'null' and code != 'undefined'">
+                AND code LIKE CONCAT('%',#{code},'%')
+            </if>
+            <if test="state != null and state != '' and state != 'null' and state != 'undefined'">
+                AND state LIKE CONCAT('%',#{state},'%')
+            </if>
+            <if test="grade != null and grade != '' and grade != 'null' and grade != 'undefined'">
+                AND grade LIKE CONCAT('%',#{grade},'%')
+            </if>
+            <if test="estate != null and estate != '' and estate != 'null' and estate != 'undefined'">
+                AND estate LIKE CONCAT('%',#{estate},'%')
+            </if>
+            <if test="heating != null and heating != '' and heating != 'null' and heating != 'undefined'">
+                AND heating LIKE CONCAT('%',#{heating},'%')
+            </if>
+        </where>
+        LIMIT #{num},#{len}
+    </select>
+
+    <select id="maxPages" resultType="java.lang.Integer" parameterType="map">
+        SELECT count(1)
+        FROM person
+        <where>
+            <if test="name != null and name != '' and name != 'null' and name != 'undefined'">
+                AND `name` LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="code != null and code != '' and code != 'null' and code != 'undefined'">
+                AND code LIKE CONCAT('%',#{code},'%')
+            </if>
+            <if test="state != null and state != '' and state != 'null' and state != 'undefined'">
+                AND state LIKE CONCAT('%',#{state},'%')
+            </if>
+            <if test="grade != null and grade != '' and grade != 'null' and grade != 'undefined'">
+                AND grade LIKE CONCAT('%',#{grade},'%')
+            </if>
+            <if test="estate != null and estate != '' and estate != 'null' and estate != 'undefined'">
+                AND estate LIKE CONCAT('%',#{estate},'%')
+            </if>
+            <if test="heating != null and heating != '' and heating != 'null' and heating != 'undefined'">
+                AND heating LIKE CONCAT('%',#{heating},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPersonById" resultType="com.luo.xm.model.Person" parameterType="int">
+        SELECT *
+        FROM person
+        WHERE id = #{id}
+    </select>
+
+    <delete id="deleteSome" parameterType="list">
+        DELETE FROM person
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updatePerson" parameterType="person">
+        UPDATE person
+        SET name    = #{name},
+            code    = #{code},
+            unit    = #{unit},
+            state   = #{state},
+            grade   = #{grade},
+            estate  = #{estate},
+            heating = #{heating},
+            reason  = #{reason}
+        WHERE id = #{id}
+    </update>
+
+    <select id="updateSelectCode" parameterType="map" resultType="int">
+        SELECT COUNT(1)
+        FROM person
+        WHERE id != #{id}
+          AND code = #{code}
+    </select>
+
+    <select id="queryCode" resultType="java.lang.String">
+        SELECT code
+        FROM person
+    </select>
+</mapper>

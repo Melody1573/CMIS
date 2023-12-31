@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--映射点 映射接口文件-->
+<mapper namespace="com.luo.xm.dao.SubsidyDaoInter">
+    <resultMap id="personSubsidyOV" type="com.luo.xm.model.PersonSubsidyOV">
+        <result property="pid" column="person_id"></result>
+        <result property="sid" column="id"></result>
+    </resultMap>
+
+    <update id="updateSub" parameterType="com.luo.xm.model.Subsidy">
+        UPDATE subsidy
+        SET money = #{money},reason = #{reason}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSome" parameterType="list">
+        DELETE FROM subsidy
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteOne" parameterType="int">
+        DELETE FROM subsidy
+        WHERE id = #{id}
+    </delete>
+
+    <select id="queryPeopleBySub" resultType="person" parameterType="map">
+        SELECT *
+        FROM person
+        WHERE ${attr} != 0
+    </select>
+
+    <select id="querySome" parameterType="map" resultMap="personSubsidyOV">
+        SELECT subsidy.id,month, money, type, subsidy.reason, subsidy.person_id, name, code, unit, state, grade, estate, heating
+        FROM person JOIN subsidy
+        ON person.id = subsidy.person_id
+        <where>
+                AND subsidy.type = #{type}
+            <if test="name != null and name != ''">
+                AND person.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="code != null and code != ''">
+                AND person.code LIKE CONCAT('%',#{code},'%')
+            </if>
+            <if test="month != null and month != ''">
+                AND month(`month`) = #{month}
+            </if>
+        </where>
+        LIMIT #{num},#{len}
+    </select>
+
+    <select id="querySomeCount" parameterType="map" resultType="int">
+        SELECT COUNT(1)
+        FROM person JOIN subsidy
+        ON person.id = subsidy.person_id
+        <where>
+            AND subsidy.type = #{type}
+            <if test="name != null and name != ''">
+                AND person.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="code != null and code != ''">
+                AND person.code LIKE CONCAT('%',#{code},'%')
+            </if>
+            <if test="month != null and month != ''">
+                AND month(`month`) = #{month}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryBySid" resultMap="personSubsidyOV" parameterType="int">
+        SELECT subsidy.id,month, money, type, subsidy.reason, subsidy.person_id, name, code, unit, state, grade, estate, heating
+        FROM person JOIN subsidy
+        ON person.id = subsidy.person_id
+        WHERE subsidy.id = #{id}
+    </select>
+
+    <insert id="insertSub" parameterType="subsidy">
+        INSERT INTO subsidy(id, month, money, type, reason, person_id)
+        VALUES (#{id}, #{month}, #{money}, #{type}, #{reason}, #{personId})
+    </insert>
+</mapper>
