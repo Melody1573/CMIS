@@ -53,7 +53,7 @@
                                 <input type="text" id="datepicker" class="form-control" name="month" value="${month}">
                             </div>
                         </div>
-                        <button class="btn btn-success" type="submit">查询</button>
+                        <button class="btn btn-success" type="submit" id="subbtn">查询</button>
                         <button class="btn btn-primary" type="button" id="save"
                                 onclick="window.location.href='<%=request.getContextPath()%>/subsidyManage.do?subsidyFlag=addSub&type=${type}'">
                             添加
@@ -82,14 +82,15 @@
                             <%--这里使用forEach--%>
                             <c:forEach items="${personSubsidyOVS}" var="ov" varStatus="i">
                                 <tr>
-                                    <td>${(i.index+1)+len*num-len}</td>
+                                        <%--<td>${(i.index+1)+len*num-len}</td>--%>
+                                    <td>${ov.sid}</td>
                                     <td><input type="checkbox" id="${ov.sid}" class="checks"></td>
                                     <td>${ov.month}</td>
                                     <td>${ov.unit}</td>
                                     <td>${ov.name}</td>
                                     <td>${ov.code}</td>
-                                    <td>${ov.grade}</td>
-                                    <td>${ov.money}</td>
+                                    <td>${1==ov.grade?"省级正职":2==ov.grade?"省级副职":3==ov.grade?"厅级正职":4==ov.grade?"厅级副职":5==ov.grade?"县级正职":6==ov.grade?"县级副职":"无"}</td>
+                                    <td>${ov.money <= 0 ?"error":ov.money}</td>
                                     <td>
                                         <a href="#" id="${ov.sid}" class="updateOne">更新</a>
                                         |
@@ -111,14 +112,15 @@
                         <button class="btn btn-white" type="button">末页</button>
                         <button class="btn btn-danger" type="button" disabled>当前页${num}/总页数${count}/总条数${rows}</button>
                     </div>
-                    <select class="form-control" name="pageSize">
+                    <select class="form-control" name="pageSize" style="width: 10%;display: inline">
                         <option value="10" ${len == 10 ? "selected" : ""}>每页10条</option>
                         <option value="20" ${len == 20 ? "selected" : ""}>每页20条</option>
                         <option value="30" ${len == 30 ? "selected" : ""}>每页30条</option>
                         <option value="40" ${len == 40 ? "selected" : ""}>每页40条</option>
                         <option value="50" ${len == 50 ? "selected" : ""}>每页50条</option>
                     </select>
-                    <input class="form-control" id="goPage" type="number" value="${num}" placeholder="请输入跳转页码">
+                    <input style="width: 10%;display: inline" class="form-control" id="goPage" type="number"
+                           value="${num}" placeholder="请输入跳转页码">
                 </div>
             </div>
         </div>
@@ -127,6 +129,11 @@
 
 <script type="application/javascript">
     $(document).ready(function () {
+        <%--if("${num*len}"-"${rows}" >= "${len}"){--%>
+        <%--    $("[name = num]").val(1)--%>
+        <%--    $(".form-inline").submit()--%>
+        <%--}--%>
+
         $(".btn-group>button").click(function () {
             let text = $(this).text()
             switch (text) {
@@ -171,16 +178,19 @@
             $(".form-inline").submit()
         })
 
-        $("#goPage").change(function () {
+        //页面跳转
+        $("#goPage").change(function go() {
             if ($(this).val() < 1) {
                 $(this).val(1)
             } else if ($(this).val() > ${count}) {
                 $(this).val(${count})
+            } else {
+                $("[name=num]").val($(this).val())
+                $(".form-inline").submit()
             }
-            $("[name=num]").val($(this).val())
-            $(".form-inline").submit()
         })
 
+        //全选
         $("#checkAll").change(function () {
             //获取自己的状态
             let bool = $(this).prop("checked");
@@ -188,13 +198,32 @@
             $(".checks").prop("checked", bool);
         })
 
+        //反选
         $("#inverse").click(function () {
+            let all = true;
             //遍历每个复选框并将其的值设置为相反的值
             $(".checks").each(function () {
                 $(this).prop("checked", !$(this).prop("checked"))
+                if (!$(this).prop("checked")) {
+                    all = false;
+                }
             });
+            //将全选的值设置为对应的值
+            $("#checkAll").prop("checked", all);
         })
 
+        //取消全选
+        $(".checks").change(function () {
+            let all = true;
+            $(".checks").each(function () {
+                if (!$(this).prop("checked")) {
+                    all = false;
+                }
+            });
+            $("#checkAll").prop("checked", all);
+        })
+
+        //批量删除
         $("#batch").click(function () {
             //是否确认删除
             let r = confirm("是否确认删除")
@@ -219,6 +248,7 @@
                     success: function (data) {
                         alert(data)
                         //删除完成后再次提交表单进行查询刷新
+                        $("[name=num]").val(1)
                         $(".form-inline").submit()
                     },
                     error: function (data) {
@@ -229,7 +259,7 @@
         })
 
         $(".deleteOne").click(function () {
-            let r = confirm("是否确认删除【" + $(this).attr("name")+"】")
+            let r = confirm("是否确认删除【" + $(this).attr("name") + "】的id为【" + $(this).attr("id") + "】补贴项")
             if (r == true) {
                 //数组序列化
                 let id = $(this).attr("id");
@@ -244,6 +274,7 @@
                     success: function (data) {
                         alert(data)
                         //删除完成后再次提交表单进行查询刷新
+                        $("[name=num]").val(1)
                         $(".form-inline").submit()
                     },
                     error: function (data) {
@@ -257,9 +288,26 @@
             //1.获取id值
             let id = $(this).attr("id")
             //2.跳转到update页面
-            window.location.href="subsidyManage.do?subsidyFlag=goUpdate&type=${type}&id="+id
+            window.location.href = "subsidyManage.do?subsidyFlag=goUpdate&type=${type}&id=" + id
         })
-    });
+
+        // 初始化日期选择器
+        $('#datepicker').datepicker({
+            format: 'yyyy-mm', // 设置日期格式
+            autoclose: true, // 选择日期后自动关闭日期选择框
+            minViewMode: 1 // 设置最小显示的视图为年月
+        });
+
+        // 点击图标触发日期选择器
+        $('.input-group-addon').click(function () {
+            $('#datepicker').datepicker('show');
+        });
+
+        $('#subbtn').click(function () {
+            $("[name = num]").val(1)
+            $(".form-inline").submit()
+        })
+    })
 </script>
 </body>
 </html>

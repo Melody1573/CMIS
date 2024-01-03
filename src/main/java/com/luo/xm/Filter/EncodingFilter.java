@@ -2,7 +2,6 @@ package com.luo.xm.Filter;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,8 +27,8 @@ public class EncodingFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         httpServletRequest.setCharacterEncoding(encoding);
-        // httpServletResponse.setContentType("charset=" + encoding);
-        //httpServletRequest.setCharacterEncoding(encoding);
+        // httpServletResponse.setContentType("text/html;charset=utf8");
+        httpServletResponse.setCharacterEncoding(encoding);
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 

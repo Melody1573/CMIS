@@ -115,7 +115,7 @@
         var icon = "<i class='fa fa-times-circle'></i>  ";
 
         function formCheck() {
-            return $('#personForm').validate({
+            $('#personForm').validate({
                 //表单交验
                 rules: {
                     name: {
@@ -191,39 +191,75 @@
             // 阻止表单的默认提交行为
             event.preventDefault();
             // 表单校验
-            if (formCheck().form()) {
-                // 在这里执行您的自定义操作
-                var selectedValues = [];
-                $('input[name="subsidy"]:checked').each(function () {
-                    selectedValues.push($(this).val())
-                });
-                let sel = selectedValues.join();
-                $.ajax({
-                    url: "<%=request.getContextPath()%>/personManage.do", // 请求的URL地址
-                    type: "POST",
-                    data: {
-                        personFlag: "insertPerson",
-                        name: $("input[name='name']").val(),
-                        code: $("input[name='code']").val(),
-                        unit: $("input[name='unit']").val(),
-                        state: $("select[name='state'] option:selected").val(),
-                        grade: $("select[name='grade'] option:selected").val(),
-                        subsidy: sel,
-                        reason: $("textarea[name='reason']").val()
-                    },
-                    success: function (response) {
-                        if (response > 0) {
-                            alert("添加成功")
-                            window.location.href = "<%=request.getContextPath()%>/personManage.do?personFlag=index";
-                        } else {
-                            alert("添加失败\n错误代码" + response)
+            // if (formCheck().form()) {
+            // 在这里执行您的自定义操作
+            var selectedValues = [];
+            $('input[name="subsidy"]:checked').each(function () {
+                selectedValues.push($(this).val())
+            });
+            let sel = selectedValues.join();
+            $.ajax({
+                url: "<%=request.getContextPath()%>/personManage.do", // 请求的URL地址
+                type: "POST",
+                data: {
+                    personFlag: "insertPerson",
+                    name: $("input[name='name']").val(),
+                    code: $("input[name='code']").val(),
+                    unit: $("input[name='unit']").val(),
+                    state: $("select[name='state'] option:selected").val(),
+                    grade: $("select[name='grade'] option:selected").val(),
+                    subsidy: sel,
+                    reason: $("textarea[name='reason']").val()
+                },
+                success: function (response) {
+                    if (response > 0) {
+                        alert("添加成功")
+                        window.location.href = "<%=request.getContextPath()%>/personManage.do?personFlag=index";
+                    } else {
+                        let info;
+                        switch (response) {
+                            case "-1":
+                                info = "名字不能为空"
+                                break;
+                            case "-2":
+                                info = "身份证号长度不正确"
+                                break;
+                            case "-3":
+                                info = "状态为必选项"
+                                break;
+                            case "-4":
+                                info = "职级为必选项"
+                                break;
+                            case "-5":
+                                info = "不贴项为必选项"
+                                break;
+                            case "-6":
+                                info = "身份证不符合格式要求"
+                                break;
+                            case "-7":
+                                info = "身份证号已存在"
+                                break;
+                            case "-8":
+                                info = "说明文字多余200字"
+                                break;
+                            case "-9":
+                                info = "名字长度必须是2-50之间"
+                                break;
+                            case "-10":
+                                info = "单位不能为空"
+                                break;
+                            case "-11":
+                                info = "单位长度必须是5-50之间"
+                                break;
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        alert("添加失败")
+                        alert("添加失败【" + info + "】");
                     }
-                });
-            }
+                },
+                error: function (xhr, status, error) {
+                    alert("添加失败\n错误代码error")
+                }
+            });
+            // }
         })
     })
 </script>

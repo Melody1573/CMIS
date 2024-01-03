@@ -33,7 +33,7 @@
                         <span><img alt="image" class="img-circle" style="width:170px;" src="static/img/logo.jpeg"/></span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear" style="text-align: center;">
-                                    <span class="block m-t-xs"><strong class="font-bold">admin</strong></span>
+                                    <span class="block m-t-xs"><strong class="font-bold"><%=session.getAttribute("loginName")%></strong></span>
                                     <span class="text-muted text-xs block">超级管理员<b class="caret"></b></span>
                                 </span>
                         </a>
@@ -99,7 +99,7 @@
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                             <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-messages">
+                        <ul class=" dropdown-menu dropdown-messages">
                             <li class="m-t-xs">
                                 <div class="dropdown-messages-box">
                                     <a href="profile.html" class="pull-left">
@@ -200,7 +200,7 @@
             <a href="login.jsp" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i>退出</a>
         </div>
         <div class="row J_mainContent" id="content-main">
-            <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="main.html" frameborder="0" data-id="main.html" seamless></iframe>
+            <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="mainServlet.do?mainFlag=index" frameborder="0" data-id="main.html" seamless></iframe>
         </div>
         <div class="footer">
             <div class="pull-right">&copy; 2021 <a href="https://www.javakc.com/" target="_blank">Javakc</a>

@@ -104,10 +104,10 @@
             method: "POST",
             data: $("#subsidyForm").serialize(),
             success: function (data) {
-                if (data > 0){
-                    alert("更新成功")
+                if (data.code > 0){
+                    alert(data.msg)
                 }else{
-                    alert("更新失败")
+                    alert(data.msg)
                 }
                 window.location.href="subsidyManage.do?subsidyFlag=goSublist&type=${type}"
             },

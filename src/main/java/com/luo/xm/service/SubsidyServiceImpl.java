@@ -3,6 +3,7 @@ package com.luo.xm.service;
 import com.luo.xm.dao.SubsidyDaoInter;
 import com.luo.xm.model.Person;
 import com.luo.xm.model.PersonSubsidyOV;
+import com.luo.xm.model.SubTimes;
 import com.luo.xm.model.Subsidy;
 import com.luo.xm.uitl.SqlSessionUtil;
 import org.apache.ibatis.session.SqlSession;
@@ -42,14 +43,18 @@ public class SubsidyServiceImpl implements SubsidyService {
     public List<PersonSubsidyOV> querySome(Map<String, Object> map) {
         SqlSession sqlSession = SqlSessionUtil.getSqlSession();
         SubsidyDaoInter mapper = sqlSession.getMapper(SubsidyDaoInter.class);
-        map.put("num",((int)map.get("num")-1)*(int)map.get("len"));
+        map.put("num", ((int) map.get("num") - 1) * (int) map.get("len"));
         List<PersonSubsidyOV> personSubsidyOVS = mapper.querySome(map);
+        //格式化月份
+        for (PersonSubsidyOV personSubsidyOV :personSubsidyOVS) {
+            personSubsidyOV.reMonth();
+        }
         sqlSession.close();
         return personSubsidyOVS;
     }
 
     @Override
-    public int querySomeCount(Map<String,Object> map){
+    public int querySomeCount(Map<String, Object> map) {
         SqlSession sqlSession = SqlSessionUtil.getSqlSession();
         SubsidyDaoInter mapper = sqlSession.getMapper(SubsidyDaoInter.class);
         int rows = mapper.querySomeCount(map);
@@ -58,7 +63,7 @@ public class SubsidyServiceImpl implements SubsidyService {
     }
 
     @Override
-    public int  deleteSome(List list){
+    public int deleteSome(List list) {
         SqlSession sqlSession = SqlSessionUtil.getSqlSession();
         SubsidyDaoInter mapper = sqlSession.getMapper(SubsidyDaoInter.class);
         int rows = mapper.deleteSome(list);
@@ -78,7 +83,7 @@ public class SubsidyServiceImpl implements SubsidyService {
     }
 
     @Override
-    public PersonSubsidyOV queryBySid(int id){
+    public PersonSubsidyOV queryBySid(int id) {
         SqlSession sqlSession = SqlSessionUtil.getSqlSession();
         SubsidyDaoInter mapper = sqlSession.getMapper(SubsidyDaoInter.class);
         PersonSubsidyOV personSubsidyOV = mapper.queryBySid(id);
@@ -94,5 +99,15 @@ public class SubsidyServiceImpl implements SubsidyService {
         sqlSession.commit();
         sqlSession.close();
         return rows;
+    }
+
+    @Override
+    public SubTimes selectCountH(SubTimes subTimes){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        SubsidyDaoInter mapper = sqlSession.getMapper(SubsidyDaoInter.class);
+        SubTimes sub = mapper.selectCountH(subTimes);
+        sqlSession.commit();
+        sqlSession.close();
+        return sub;
     }
 }

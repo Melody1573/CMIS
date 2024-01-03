@@ -2,6 +2,7 @@ package com.luo.xm.service;
 
 import com.luo.xm.model.Person;
 import com.luo.xm.model.PersonSubsidyOV;
+import com.luo.xm.model.SubTimes;
 import com.luo.xm.model.Subsidy;
 
 import java.util.List;
@@ -24,4 +25,5 @@ public interface SubsidyService {
 
     public int updateSub(Subsidy subsidy);
 
+    public SubTimes selectCountH(SubTimes subTimes);
 }

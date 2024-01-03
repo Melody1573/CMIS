@@ -2,6 +2,7 @@ package com.luo.xm.controller;
 
 import com.luo.xm.model.Person;
 import com.luo.xm.service.PersonServiceImpl;
+import com.luo.xm.uitl.BoolCodeUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,12 +18,12 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/personManage.do")
 public class PersonManage extends HttpServlet {
+    PersonServiceImpl personService = new PersonServiceImpl();
+
     @Override
     protected void service(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("utf8");
         String flag = req.getParameter("personFlag");
-        System.out.println(flag);
-        PersonServiceImpl personService = new PersonServiceImpl();
         if ("index".equals(flag) || "query".equals(flag)) {
             /**
              * 跳转到人员管理页面
@@ -124,6 +125,34 @@ public class PersonManage extends HttpServlet {
                 return;
             } else if (subsidys[0] == "" || subsidys[0] == null) {
                 writer.write("-5");
+                writer.close();
+                return;
+            } else if (reason.length() > 200) {
+                writer.write("-8");
+                writer.close();
+                return;
+            } else if (name.length() >= 50 || name.length() < 2) {
+                writer.write("-9");
+                writer.close();
+                return;
+            } else if (unit == null || unit == "") {
+                writer.write("-10");
+                writer.close();
+                return;
+            } else if (unit.length() > 50 || unit.length() < 4) {
+                writer.write("-11");
+                writer.close();
+                return;
+            }
+            boolean b1 = BoolCodeUtil.validateID(code);
+            boolean b2 = BoolCodeUtil.queryCodes(code, personService);
+            if (!b1) {
+                writer.write("-6");
+                writer.close();
+                return;
+            }
+            if (!b2) {
+                writer.write("-7");
                 writer.close();
                 return;
             }

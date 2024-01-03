@@ -35,7 +35,7 @@ public class Subsidy {
         return month;
     }
 
-    public void setMonth(final String month) {
+    public void setMonth(String month) {
         this.month = month;
     }
 

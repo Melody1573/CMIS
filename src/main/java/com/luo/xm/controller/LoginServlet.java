@@ -47,6 +47,7 @@ public class LoginServlet extends HttpServlet {
                 return;
             } else {
                 req.getSession().setAttribute("loginFlag", "true");
+                req.getSession().setAttribute("loginName",loginName);
                 resp.sendRedirect(req.getContextPath()+"/IndexServlet.do?indexFlag=login");
                 return;
             }

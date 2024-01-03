@@ -174,11 +174,11 @@
                         alert("添加成功")
                         window.location.href="<%=request.getContextPath()%>/subsidyManage.do?subsidyFlag=goSublist&type=${type}"
                     }else{
-                        alert("添加失败")
+                        alert("添加失败\n错误代码"+respone)
                     }
                 },
                 error: function () {
-                    alert("添加失败")
+                    alert("添加失败\n错误代码error")
                 }
             })
         })

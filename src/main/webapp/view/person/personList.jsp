@@ -251,7 +251,7 @@
                             alert("删除失败")
                         }
                         init();
-                        window.location.href = '<%=request.getContextPath()%>/personManage.do?personFlag=index&num=${num}&len=${len}&name='
+                        window.location.href = '<%=request.getContextPath()%>/personManage.do?personFlag=index&num=1&len=${len}&name='
                             + name + '&code=' + code + '&state=' + state + '&grade=' + grade + '&heating=' + heating + '&estate=' + estate
                     },
                     error: function (response) {
@@ -308,10 +308,11 @@
         $("#goPage").change(function () {
             let number = $(this).val();
             if (number < 1) {
-                number = 1
+                $(this).val(1)
+                return
             } else if (number > ${count}) {
-                number =
-                ${count}
+                $(this).val(${count})
+                return
             }
             init();
             window.location.href = '<%=request.getContextPath()%>/personManage.do?personFlag=index&num=' + number + '&len=${len}&name='
@@ -343,7 +344,7 @@
                             alert("删除失败")
                         }
                         init();
-                        window.location.href = '<%=request.getContextPath()%>/personManage.do?personFlag=index&num=${num}&len=${len}&name='
+                        window.location.href = '<%=request.getContextPath()%>/personManage.do?personFlag=index&num=1&len=${len}&name='
                             + name + '&code=' + code + '&state=' + state + '&grade=' + grade + '&heating=' + heating + '&estate=' + estate
                     },
                     error: function (response) {
@@ -361,11 +362,36 @@
             })
         })
 
+        // //反选
+        // $("#inverse").click(function () {
+        //     $(".check").each(function () {
+        //         $(this).prop("checked", !($(this).is(":checked")))
+        //     })
+        // })
+
         //反选
         $("#inverse").click(function () {
+            let all = true;
+            //遍历每个复选框并将其的值设置为相反的值
             $(".check").each(function () {
-                $(this).prop("checked", !($(this).is(":checked")))
-            })
+                $(this).prop("checked", !$(this).prop("checked"))
+                if (!$(this).prop("checked")) {
+                    all = false;
+                }
+            });
+            //将全选的值设置为对应的值
+            $("#checkAll").prop("checked", all);
+        })
+
+        //取消全选
+        $(".check").change(function () {
+            let all = true;
+            $(".check").each(function () {
+                if (!$(this).prop("checked")) {
+                    all = false;
+                }
+            });
+            $("#checkAll").prop("checked", all);
         })
 
         //批量添加
@@ -373,20 +399,20 @@
             let fileInput = $("#addSome")[0];
             let file = fileInput.files[0];
             let formData = new FormData();
-            formData.append("file",file);
+            formData.append("file", file);
             $.ajax({
-                url:"personExpand?type=addSomePerson",
-                method:"post",
+                url: "personExpand?type=addSomePerson",
+                method: "post",
                 processData: false,
                 contentType: false,
-                data:formData,
-                success:function (data) {
+                data: formData,
+                success: function (data) {
                     alert(data);
                     init();
                     window.location.href = '<%=request.getContextPath()%>/personManage.do?personFlag=index&num=${num}&len=${len}&name='
                         + name + '&code=' + code + '&state=' + state + '&grade=' + grade + '&heating=' + heating + '&estate=' + estate
                 },
-                error:function () {
+                error: function () {
                     alert("error")
                 }
             })

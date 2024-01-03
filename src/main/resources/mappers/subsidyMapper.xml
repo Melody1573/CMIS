@@ -33,7 +33,7 @@
     </select>
 
     <select id="querySome" parameterType="map" resultMap="personSubsidyOV">
-        SELECT subsidy.id,month, money, type, subsidy.reason, subsidy.person_id, name, code, unit, state, grade, estate, heating
+        SELECT subsidy.id,CONCAT(year(month),'-',month(month)) AS month, money, type, subsidy.reason, subsidy.person_id, name, code, unit, state, grade, estate, heating
         FROM person JOIN subsidy
         ON person.id = subsidy.person_id
         <where>
@@ -47,7 +47,11 @@
             <if test="month != null and month != ''">
                 AND month(`month`) = #{month}
             </if>
+            <if test="year != null and year != ''">
+                AND year(`month`) = #{year}
+            </if>
         </where>
+        ORDER BY subsidy.id DESC
         LIMIT #{num},#{len}
     </select>
 
@@ -66,6 +70,9 @@
             <if test="month != null and month != ''">
                 AND month(`month`) = #{month}
             </if>
+            <if test="year != null and year != ''">
+                AND year(`month`) = #{year}
+            </if>
         </where>
     </select>
 
@@ -80,4 +87,11 @@
         INSERT INTO subsidy(id, month, money, type, reason, person_id)
         VALUES (#{id}, #{month}, #{money}, #{type}, #{reason}, #{personId})
     </insert>
+
+    <select id="selectCountH" resultType="subTimes" parameterType="subTimes">
+        SELECT COUNT(person.id) AS personCount,SUM(money) AS sumMoney
+        FROM subsidy JOIN person
+        ON subsidy.person_id = person.id
+        WHERE type = #{type} AND month(`month`) = #{month} AND year(`month`) = #{year}
+    </select>
 </mapper>

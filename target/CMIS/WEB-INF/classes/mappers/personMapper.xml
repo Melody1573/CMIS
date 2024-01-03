@@ -44,6 +44,7 @@
                 AND heating LIKE CONCAT('%',#{heating},'%')
             </if>
         </where>
+        ORDER BY id DESC
         LIMIT #{num},#{len}
     </select>
 

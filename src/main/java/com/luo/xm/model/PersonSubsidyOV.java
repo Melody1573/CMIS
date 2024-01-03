@@ -126,6 +126,16 @@ public class PersonSubsidyOV {
         this.sid = sid;
     }
 
+    public void reMonth(){
+        String[] split = this.month.split("-");
+        if (split[1].length() < 2){
+            StringBuffer stringBuffer = new StringBuffer(split[0]);
+            stringBuffer.append("-").append("0").append(split[1]);
+            this.month = stringBuffer.toString();
+            return;
+        }
+    }
+
     @Override
     public String toString() {
         return "PersonSubsidyOV{" +

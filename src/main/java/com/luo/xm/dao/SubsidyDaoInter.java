@@ -2,6 +2,7 @@ package com.luo.xm.dao;
 
 import com.luo.xm.model.Person;
 import com.luo.xm.model.PersonSubsidyOV;
+import com.luo.xm.model.SubTimes;
 import com.luo.xm.model.Subsidy;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface SubsidyDaoInter {
     public int updateSub(Subsidy subsidy);
 
     public int deleteOne(int id);
+
+    public SubTimes selectCountH(SubTimes subTimes);
 }
