@@ -170,11 +170,11 @@
                 type: "POST",
                 data: $("#subsidyForm").serialize(),
                 success: function (respone) {
-                    if (respone > 0){
+                    if (respone > 0) {
                         alert("添加成功")
-                        window.location.href="<%=request.getContextPath()%>/subsidyManage.do?subsidyFlag=goSublist&type=${type}"
-                    }else{
-                        alert("添加失败\n错误代码"+respone)
+                        window.location.href = "<%=request.getContextPath()%>/subsidyManage.do?subsidyFlag=goSublist&type=${type}"
+                    } else {
+                        alert("添加失败\n错误代码" + respone)
                     }
                 },
                 error: function () {
